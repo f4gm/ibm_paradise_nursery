@@ -9,7 +9,6 @@ function ProductList({ onHomeClick }) {
   const cart = useSelector((state) => state.cart.items);
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-  const [addedToCart, setAddedToCart] = useState({});
 
   const plantsArray = [
     {
@@ -286,6 +285,10 @@ function ProductList({ onHomeClick }) {
     transform: "translate(-50%, -50%)"
   }
 
+  const styleCategoryTitle = {
+    textAlign: "center"
+  }
+
   const handleHomeClick = (e) => {
     e.preventDefault();
     onHomeClick();
@@ -395,8 +398,9 @@ function ProductList({ onHomeClick }) {
                 {" "}
                 {/* Unique key for each category div */}
                 <h1>
-                  <div>{category.category}</div>{" "}
-                  {/* Display the category name */}
+                  <hr />
+                  <div style={styleCategoryTitle}>{category.category}</div>{" "}
+                  <hr />
                 </h1>
                 <div className="product-list">
                   {" "}

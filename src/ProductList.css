@@ -41,6 +41,7 @@ body {
 
 /* Product Grid */
 .product-grid {
+    margin-top: 16px;
     display:flex;
     flex-direction: column;
     width: 100vw;
