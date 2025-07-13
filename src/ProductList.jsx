@@ -2,10 +2,11 @@ import { useState } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
 import { addItem } from "./CartSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 function ProductList({ onHomeClick }) {
   const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart.items);
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
   const [addedToCart, setAddedToCart] = useState({});
@@ -271,10 +272,19 @@ function ProductList({ onHomeClick }) {
   };
 
   const styleA = {
+    position: "relative",
     color: "white",
     fontSize: "30px",
     textDecoration: "none",
   };
+
+  const styleTotalItems = {
+    position: "absolute",
+    fontSize: "15px",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)"
+  }
 
   const handleHomeClick = (e) => {
     e.preventDefault();
@@ -297,13 +307,25 @@ function ProductList({ onHomeClick }) {
   };
 
   const handleAddToCart = (product) => {
-    dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
+    dispatch(addItem(product));
+  };
 
-    setAddedToCart((prevState) => ({
-      // Update the local state to reflect that the product has been added
-      ...prevState, // Spread the previous state to retain existing entries
-      [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
-    }));
+  const itemOnCart = (name) => {
+    const existingItem = cart.find((item) => item.name === name);
+    if (existingItem) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  const calculateTotalItems = () => {
+    let total = 0;
+    cart.forEach((item) => {
+      const quantity = item.quantity;
+      total = total + quantity;
+    });
+    return total;
   };
 
   return (
@@ -354,6 +376,9 @@ function ProductList({ onHomeClick }) {
                     id="mainIconPathAttribute"
                   ></path>
                 </svg>
+                <span style={styleTotalItems}>
+                  { calculateTotalItems() }
+                </span>
               </h1>
             </a>
           </div>
@@ -400,9 +425,9 @@ function ProductList({ onHomeClick }) {
                         {/* Display plant cost */}
                         <button
                           className={`product-button ${
-                            addedToCart[plant.name] ? " added-to-cart" : ""
+                            itemOnCart(plant.name) ? " added-to-cart" : ""
                           }`}
-                          disabled={addedToCart[plant.name]}
+                          disabled={itemOnCart(plant.name)}
                           onClick={() => handleAddToCart(plant)} // Handle adding plant to cart
                         >
                           Add to Cart
